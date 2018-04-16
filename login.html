@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Login Form</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <section class="container">
+    <div class="login">
+      <h1>Welcome to Text2Voice!</h1>
+      Please log in or create a new account below
+      <form method="post" action="index.html">
+        <br>
+        <input type="text" name="username" value="" placeholder="Username">
+        <input type="password" name="password" value="" placeholder="Password">
+        <p class="submit"><input type="submit" name="commit" value="Log In", onClick="loginFunc()"></p>
+        <p class="submit"><input type="submit" name="commit" value="Create Account", onClick="createAccFunc()"></p>
+        <script>
+
+//ACCOUNT HANDLING FUNCTIONS!!!!!!!!!!!!!!!!
+				localStorage.clear();
+				AWS.config.update({
+    			accessKeyId: '',
+    			secretAccessKey: '',
+   	 			"region": "us-east-1"
+				});
+
+				var lambda = new AWS.Lambda({region: 'us-east-1', apiVersion: '2018-03-28'});
+
+        function loginFunc(){
+          var username = document.getElementsByName("username")[0].value;
+					var password = document.getElementsByName("password")[0].value;
+
+          var params = {
+            FunctionName : 'authenticate',
+            InvocationType : 'RequestResponse',
+            Payload: '{"Username":"' + username +'","Password":"' + password +'"}',
+            LogType : 'None'
+          };
+
+          lambda.invoke(params, function(error, data) {
+            if (error) {
+              prompt(error);
+            }
+            else {
+              //DO SOME STUFF LATER!!!!!!!
+            }
+          });
+          }
+
+        function createAccFunc() {
+					var username = document.getElementsByName("username")[0].value;
+					var password = document.getElementsByName("password")[0].value;
+					var Payload = '{"Username":"' + username +'","Password":"' + password +'"}'
+					var params = {
+  					FunctionName : 'createUser',
+  					InvocationType : 'RequestResponse',
+  					Payload: Payload,
+  					LogType : 'None'
+					};
+
+					lambda.invoke(params, function(error, data) {
+  					if (error) {
+   						 prompt(error);
+  					}
+            else{
+  						alert("Creation Complete")
+  					}
+					});
+
+        </script>
+      </form>
+    </div>
+  </section>
+</body>
+</html>
